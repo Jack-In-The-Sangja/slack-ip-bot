@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-ROOT_URLCONF = 'slack_ip_bot.urls'
+ROOT_URLCONF = 'setting.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -72,7 +72,7 @@ TEMPLATES = [
         },
     },
 ]
-WSGI_APPLICATION = 'slack_ip_bot.wsgi.application'
+WSGI_APPLICATION = 'setting.wsgi.application'
 
 
 # Database
