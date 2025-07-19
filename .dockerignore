@@ -1,5 +1,6 @@
 # DB 데이터 (빌드와 무관한 로컬 볼륨 데이터)
-postgres_data
+slack_ip_bot/postgres_data
+var/lib/slack_ip_bot_postgres_data
 
 # Python bytecode
 __pycache__/
