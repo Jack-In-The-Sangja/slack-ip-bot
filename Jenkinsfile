@@ -40,9 +40,9 @@ pipeline {
             steps {
                 echo "STAGE: Check SSH & Docker connection"
                 script {
-                    sh "ssh -o StrictHostKeyChecking=no ${remoteService} 'docker ps -a'"
-                    sh "ssh -o StrictHostKeyChecking=no ${remoteService} 'docker version'"
-                    sh "ssh -o StrictHostKeyChecking=no ${remoteService} 'docker compose version || docker-compose version || echo 🚫 docker compose not found'"
+                    sh "docker ps -a"
+                    sh "docker version"
+                    sh "docker compose version || docker-compose version || echo 🚫 docker compose not found"
                 }
             }
         }
