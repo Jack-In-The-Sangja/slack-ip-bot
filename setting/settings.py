@@ -41,6 +41,7 @@ else:
 
 # Application definition
 INSTALLED_APPS = [
+    'slack_bot',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
