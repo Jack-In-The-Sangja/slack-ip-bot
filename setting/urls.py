@@ -21,5 +21,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('myapp.urls')),  # '' 경로에 myapp의 urls를 연결
+    path('', include('slack_bot.urls')),  # '' 경로에 myapp의 urls를 연결
 ]
