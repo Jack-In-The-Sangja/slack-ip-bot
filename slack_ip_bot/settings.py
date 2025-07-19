@@ -77,10 +77,21 @@ WSGI_APPLICATION = 'slack_ip_bot.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+db_name = os.getenv('DB_NAME')
+db_user = os.getenv('DB_USER')
+db_password = os.getenv('DB_PW')
+db_host = os.getenv('DB_HOST')
+db_port = os.getenv('DB_PORT')
+if not DEBUG:
+    raise Exception("DEBUG 환경변수가 설정되지 않았습니다.")
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": db_name,
+        "USER": db_user,
+        "PASSWORD": db_password,
+        "HOST": db_host,
+        "PORT": db_port,
     }
 }
 
