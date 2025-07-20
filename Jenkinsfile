@@ -56,6 +56,12 @@ pipeline {
                 echo "STAGE: Deploy to ${target.toUpperCase()}"
                 script {
                     sh """
+                        docker rm -f postgres || true
+                    """
+                    sh """
+                        docker rm -f slack_ip_bot || true
+                    """
+                    sh """
                         docker compose -f docker-compose.yml build
                     """
                     sh """
