@@ -15,6 +15,8 @@ pipeline {
                     )
                     if (env.GIT_BRANCH == "origin/main") {
                         target = "production"
+                    } else if (env.GIT_BRANCH == "origin/develop") {
+                        target = "development"
                     } else {
                         error ":bangbang: Unknown branch: ${env.GIT_BRANCH}"
                     }
@@ -35,7 +37,7 @@ pipeline {
         }
         stage("Check SSH & Docker") {
             when {
-                expression { return target == "production" }
+                expression { return target in ["production", "development"] }
             }
             steps {
                 echo "STAGE: Check SSH & Docker connection"
@@ -46,12 +48,12 @@ pipeline {
                 }
             }
         }
-        stage("Deploy PROD") {
+        stage("Deploy") {
             when {
-                expression { return target == "production" }
+                expression { return target in ["production", "development"] }
             }
             steps {
-                echo "STAGE: Deploy"
+                echo "STAGE: Deploy to ${target.toUpperCase()}"
                 script {
                     sh """
                         docker compose -f docker-compose.yml build
