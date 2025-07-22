@@ -23,38 +23,28 @@ pipeline {
                 }
             }
         }
+
         stage("Copy Env Files") {
-            when {
-                expression { return target in ["production"] }
-            }
             steps {
-                echo "STAGE: Copy Prod Env Files"
-                configFileProvider([
-                    configFile(fileId: '03645e0d-62e5-49bc-86c4-efcd075a983c', variable: 'Prod_ENV'),
-                ]) {
-                    sh """
-                        cp \$Prod_ENV ${env.WORKSPACE}/.env
-                    """
-                }
-            }
-            when {
-                expression { return target in ["development"] }
-            }
-            steps {
-                echo "STAGE: Copy Dev Env Files"
-                configFileProvider([
-                    configFile(fileId: '065fbaa1-0641-41b8-98e9-f7fd3fb60419', variable: 'Dev_ENV'),
-                ]) {
-                    sh """
-                        cp \$Dev_ENV ${env.WORKSPACE}/.env
-                    """
+                script {
+                    echo "STAGE: Copy ${target == 'production' ? 'Prod' : 'Dev'} Env Files"
+                    def configFileId = (target == "production")
+                        ? '03645e0d-62e5-49bc-86c4-efcd075a983c'
+                        : '065fbaa1-0641-41b8-98e9-f7fd3fb60419'
+                    def envVarName = (target == "production") ? 'Prod_ENV' : 'Dev_ENV'
+
+                    configFileProvider([
+                        configFile(fileId: configFileId, variable: envVarName)
+                    ]) {
+                        sh """
+                            cp \$$envVarName ${env.WORKSPACE}/.env
+                        """
+                    }
                 }
             }
         }
+
         stage("Check SSH & Docker") {
-            when {
-                expression { return target in ["production", "development"] }
-            }
             steps {
                 echo "STAGE: Check SSH & Docker connection"
                 script {
@@ -64,49 +54,24 @@ pipeline {
                 }
             }
         }
+
         stage("Deploy") {
-            when {
-                expression { return target in ["production"] }
-            }
             steps {
                 echo "STAGE: Deploy to ${target.toUpperCase()}"
                 script {
-                    sh """
-                        docker rm -f postgres || true
-                    """
-                    sh """
-                        docker rm -f slack_ip_bot || true
-                    """
-                    sh """
-                        docker compose -f docker-compose.prod.yml build
-                    """
-                    sh """
-                        docker compose -f docker-compose.prod.yml up -d
-                    """
-                }
-            }
-            when {
-                expression { return target in ["development"] }
-            }
-            steps {
-                echo "STAGE: Deploy to ${target.toUpperCase()}"
-                script {
-                    sh """
-                        docker rm -f postgres || true
-                    """
-                    sh """
-                        docker rm -f slack_ip_bot || true
-                    """
-                    sh """
-                        docker compose -f docker-compose.dev.yml build
-                    """
-                    sh """
-                        docker compose -f docker-compose.dev.yml up -d
-                    """
+                    def composeFile = (target == "production")
+                        ? "docker-compose.prod.yml"
+                        : "docker-compose.dev.yml"
+
+                    sh "docker rm -f postgres || true"
+                    sh "docker rm -f slack_ip_bot || true"
+                    sh "docker compose -f ${composeFile} build"
+                    sh "docker compose -f ${composeFile} up -d"
                 }
             }
         }
     }
+
     post {
         success {
             slackSend(
