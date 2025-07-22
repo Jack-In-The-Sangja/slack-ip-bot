@@ -8,7 +8,6 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PW}
-    network_mode: "host"
     ports:
       - "5432:5432"
     volumes:
@@ -26,7 +25,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    network_mode: "host"
     ports:
       - "8000:8000"
     volumes:
