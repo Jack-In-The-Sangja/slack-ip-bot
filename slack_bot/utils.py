@@ -4,19 +4,20 @@ from botocore.exceptions import BotoCoreError, ClientError
 
 def get_aws_session(service_name: str):
     env = os.getenv("ENV", "prod")  # 기본은 prod
+    region = os.getenv("AWS_REGION", "ap-northeast-2")  # 리전 환경변수 또는 기본값
     if env == "local":
         profile = os.getenv("AWS_PROFILE", "default")
-        session = boto3.Session(profile_name=profile)
+        session = boto3.Session(profile_name=profile, region_name=region)
     else:
-        session = boto3.Session()
+        session = boto3.Session(region_name=region)
     return session.client(service_name)
 
+# 이하 동일
 def get_security_groups_data():
     try:
         ec2 = get_aws_session('ec2')
         response = ec2.describe_security_groups()
 
-        # 필요한 필드만 정리
         security_groups = [
             {
                 "GroupId": sg["GroupId"],
@@ -28,10 +29,10 @@ def get_security_groups_data():
             }
             for sg in response["SecurityGroups"]
         ]
-        return security_groups, None  # 성공 시
+        return security_groups, None
 
     except (BotoCoreError, ClientError) as e:
-        return None, str(e)  # 오류 시
+        return None, str(e)
 
 def add_inbound_rule(data):
     try:
@@ -48,7 +49,6 @@ def add_inbound_rule(data):
         return True, None
     except (ClientError, BotoCoreError) as e:
         return False, str(e)
-
 
 def remove_inbound_rule(data):
     try:
