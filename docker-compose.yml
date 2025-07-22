@@ -21,6 +21,7 @@ services:
 
   slack_ip_bot:
     container_name: "slack_ip_bot"
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile
