@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import home
+from .views import security_group_dashboard_view
 
 urlpatterns = [
-    path('', home, name='home'),
+    path('security-groups/dashboard/', security_group_dashboard_view, name='security-group-dashboard'),
 ]

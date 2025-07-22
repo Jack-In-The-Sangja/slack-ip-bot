@@ -28,7 +28,6 @@ services:
       - "8000:8000"
     volumes:
       - /var/lib/slack_ip_bot_log:/app/log
-      - ${AWS_CERT}
     depends_on:
       db:
         condition: service_healthy
